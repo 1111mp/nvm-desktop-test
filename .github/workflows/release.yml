@@ -63,7 +63,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: v__VERSION__
-          releaseName: 'Clash Verge Rev v__VERSION__'
+          releaseName: 'NVM Desktop v__VERSION__'
           releaseBody: 'More new features are now supported.'
           tauriScript: pnpm
           args: --target ${{ matrix.target }}

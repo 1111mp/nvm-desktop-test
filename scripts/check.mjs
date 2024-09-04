@@ -56,7 +56,7 @@ const NVMD_LATEST_MAP = {
  */
 if (!NVMD_LATEST_MAP[`${platform}-${arch}`]) {
 	throw new Error(
-		`clash meta alpha unsupported platform "${platform}-${arch}"`
+		`nvmd unsupported platform "${platform}-${arch}"`
 	);
 }
 
