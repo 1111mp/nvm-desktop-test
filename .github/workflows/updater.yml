@@ -1,0 +1,29 @@
+name: Updater CI
+
+on: workflow_dispatch
+permissions: write-all
+
+jobs:
+  release-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Pnpm install
+        run: pnpm i
+
+      - name: Release updater file
+        run: pnpm updater
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
