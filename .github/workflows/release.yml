@@ -46,12 +46,13 @@ jobs:
       - name: Install cross-compilation toolchain (aarch64-unknown-linux-gnu only)
         if: matrix.target == 'aarch64-unknown-linux-gnu'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu pkg-config-aarch64-linux-gnu
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
           echo 'export PKG_CONFIG_PATH=/usr/aarch64-linux-gnu/lib/pkgconfig' >> $GITHUB_ENV
           echo 'export PKG_CONFIG_SYSROOT_DIR=/' >> $GITHUB_ENV
           echo 'export PKG_CONFIG_ALLOW_CROSS=1' >> $GITHUB_ENV
-          echo 'export PKG_CONFIG=/usr/bin/aarch64-linux-gnu-pkg-config' >> $GITHUB_ENV
+          echo 'export PKG_CONFIG_LIBDIR=/usr/aarch64-linux-gnu/lib/pkgconfig' >> $GITHUB_ENV
+          echo 'export PKG_CONFIG_SYSROOT_DIR=/usr/aarch64-linux-gnu' >> $GITHUB_ENV
+          echo 'export PKG_CONFIG=/usr/bin/pkg-config' >> $GITHUB_ENV
 
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
