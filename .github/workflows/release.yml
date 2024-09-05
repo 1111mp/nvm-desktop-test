@@ -21,6 +21,10 @@ jobs:
             target: aarch64-apple-darwin
           - os: macos-latest
             target: x86_64-apple-darwin
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-22.04
+            target: aarch64-unknown-linux-gnu
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -32,6 +36,12 @@ jobs:
 
       - name: Add Rust Target
         run: rustup target add ${{ matrix.target }}
+      
+      - name: Install dependencies (ubuntu only)
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -68,45 +78,45 @@ jobs:
           tauriScript: pnpm
           args: --target ${{ matrix.target }}
 
-  release-for-linux:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-          - os: ubuntu-latest
-            target: aarch64-unknown-linux-gnu
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+  # release-for-linux:
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         - os: ubuntu-latest
+  #           target: x86_64-unknown-linux-gnu
+  #         - os: ubuntu-latest
+  #           target: aarch64-unknown-linux-gnu
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
 
-      - name: Build for Linux
-        uses: ./.github/build-for-linux
-        env:
-          NODE_OPTIONS: '--max_old_space_size=4096'
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-        with:
-          target: ${{ matrix.target }}
+  #     - name: Build for Linux
+  #       uses: ./.github/build-for-linux
+  #       env:
+  #         NODE_OPTIONS: '--max_old_space_size=4096'
+  #         TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+  #         TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+  #       with:
+  #         target: ${{ matrix.target }}
 
-      - name: Get Version
-        run: |
-          sudo apt-get update
-          sudo apt-get install jq
-          echo "VERSION=$(cat package.json | jq '.version' | tr -d '"')" >> $GITHUB_ENV
+  #     - name: Get Version
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install jq
+  #         echo "VERSION=$(cat package.json | jq '.version' | tr -d '"')" >> $GITHUB_ENV
 
-      - name: Upload Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{env.VERSION}}
-          name: 'NVM Desktop v${{env.VERSION}}'
-          body: 'More new features are now supported.'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: |
-            src-tauri/target/${{ matrix.target }}/release/bundle/deb/*.deb
-            src-tauri/target/${{ matrix.target }}/release/bundle/rpm/*.rpm
+  #     - name: Upload Release
+  #       uses: softprops/action-gh-release@v2
+  #       with:
+  #         tag_name: v${{env.VERSION}}
+  #         name: 'NVM Desktop v${{env.VERSION}}'
+  #         body: 'More new features are now supported.'
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         files: |
+  #           src-tauri/target/${{ matrix.target }}/release/bundle/deb/*.deb
+  #           src-tauri/target/${{ matrix.target }}/release/bundle/rpm/*.rpm
 
   update_release_notes:
     name: Update release notes
@@ -120,7 +130,7 @@ jobs:
         run: |
           echo "BUILDTIME=$(TZ=Asia/Shanghai date)" >> $GITHUB_ENV
         shell: bash
-        
+
       - name: Get Version
         run: |
           sudo apt-get update
