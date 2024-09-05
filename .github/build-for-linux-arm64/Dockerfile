@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 
 # 安装必要的依赖
 RUN apt-get update && \
