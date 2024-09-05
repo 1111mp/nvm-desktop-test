@@ -42,7 +42,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -68,6 +68,109 @@ jobs:
           tauriScript: pnpm
           args: --target ${{ matrix.target }}
 
+  release-for-linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-latest
+            target: i686-unknown-linux-gnu
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+          - os: ubuntu-latest
+            target: armv7-unknown-linux-gnueabihf
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build for Linux
+        uses: ./.github/build-for-linux
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          target: ${{ matrix.target }}
+
+      - name: Get Version
+        run: |
+          sudo apt-get update
+          sudo apt-get install jq
+          echo "VERSION=$(cat package.json | jq '.version' | tr -d '"')" >> $GITHUB_ENV
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{env.VERSION}}
+          name: 'NVM Desktop v${{env.VERSION}}'
+          body: 'More new features are now supported.'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            src-tauri/target/${{ matrix.target }}/release/bundle/deb/*.deb
+            src-tauri/target/${{ matrix.target }}/release/bundle/rpm/*.rpm
+
+  update_release_notes:
+    name: Update release notes
+    runs-on: ubuntu-latest
+    needs: [release, release-for-linux]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set Env
+        run: |
+          echo "BUILDTIME=$(TZ=Asia/Shanghai date)" >> $GITHUB_ENV
+        shell: bash
+        
+      - name: Get Version
+        run: |
+          sudo apt-get update
+          sudo apt-get install jq
+          echo "VERSION=$(cat package.json | jq '.version' | tr -d '"')" >> $GITHUB_ENV
+
+      - name: Update Tag
+        uses: richardsimko/update-tag@v1
+        with:
+          tag_name: v${{ env.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: |
+          cat > release.txt << 'EOF'
+          ## 我应该下载哪个版本？
+
+          ### MacOS (提示文件损坏或开发者无法验证请查看下面FAQ)
+          - MacOS intel芯片: x64.dmg
+          - MacOS apple M芯片: aarch64.dmg
+
+          ### Linux
+          - Linux 64位: amd64.deb/amd64.rpm
+          - Linux arm64架构: arm64.deb/aarch64.rpm
+
+          ### Windows (Win7 用户请查看下面FAQ中的解决方案)
+          #### 正常版本(推荐)
+          - 64位: x64-setup.exe
+          - arm64架构: arm64-setup.exe
+          #### 内置Webview2版(体积较大，仅在企业版系统或Win7无法安装webview2时使用)
+          - 64位: x64_fixed_webview2-setup.exe
+          - 32位: x86_fixed_webview2-setup.exe
+          - arm64架构: arm64_fixed_webview2-setup.exe
+
+          Created at  ${{ env.BUILDTIME }}.
+          EOF
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}
+          name: 'NVM Desktop v${{env.VERSION}}'
+          body_path: release.txt
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
+
   # release-update:
   #   runs-on: ubuntu-latest
   #   needs: [release]
@@ -78,7 +181,7 @@ jobs:
   #     - name: Install Node
   #       uses: actions/setup-node@v4
   #       with:
-  #         node-version: '22'
+  #         node-version: '20'
 
   #     - name: Install pnpm
   #       uses: pnpm/action-setup@v4
