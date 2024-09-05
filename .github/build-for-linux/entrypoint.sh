@@ -24,4 +24,10 @@ else
     echo "Unknown target: $INPUT_TARGET" && exit 1
 fi
 
+# Verify that glib-2.0 is found
+if ! pkg-config --exists glib-2.0; then
+    echo "glib-2.0 not found. Please ensure it is installed."
+    exit 1
+fi
+
 bash .github/build-for-linux/build.sh
