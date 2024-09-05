@@ -1,4 +1,4 @@
-name: "Build for Linux"
+name: "Build for Linux arm64"
 branding:
   icon: user-check
   color: gray-dark
