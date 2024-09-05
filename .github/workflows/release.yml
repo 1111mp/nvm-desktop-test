@@ -42,6 +42,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      
+      - name: Install cross-compilation toolchain (aarch64-unknown-linux-gnu only)
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          echo 'export PKG_CONFIG_PATH=/usr/aarch64-linux-gnu/lib/pkgconfig' >> $GITHUB_ENV
+          echo 'export PKG_CONFIG_SYSROOT_DIR=/' >> $GITHUB_ENV
+          echo 'export PKG_CONFIG_ALLOW_CROSS=1' >> $GITHUB_ENV
 
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
