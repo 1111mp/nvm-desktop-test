@@ -1,8 +1,8 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # 安装必要的依赖
 RUN apt-get update && \
-	apt-get install -y curl build-essential wget gcc-aarch64-linux-gnu pkg-config libgobject-2.0-dev libglib2.0-dev
+	aptitude install -y curl build-essential wget gcc-aarch64-linux-gnu pkg-config libgobject-2.0-dev libglib2.0-dev
 
 # 安装最新的 Rust 稳定版本
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
