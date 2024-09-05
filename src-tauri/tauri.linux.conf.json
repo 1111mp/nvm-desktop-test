@@ -8,8 +8,7 @@
 	},
 	"bundle": {
 		"targets": [
-			"deb",
-			"rpm"
+			"appimage"
 		],
 		"linux": {
 			"deb": {
