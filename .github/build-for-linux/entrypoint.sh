@@ -9,9 +9,7 @@ rustup target add "$INPUT_TARGET"
 
 if [ "$INPUT_TARGET" = "x86_64-unknown-linux-gnu" ]; then
     sudo apt-get update
-    sudo apt-get install -y curl wget file libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libxdo-dev build-essential libssl-dev libappindicator3-dev libayatana-appindicator3-dev librsvg2-dev patchelf
-		export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig
-		export PKG_CONFIG_ALLOW_CROSS=1
+    sudo apt-get install libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 elif [ "$INPUT_TARGET" = "aarch64-unknown-linux-gnu" ]; then
     sudo dpkg --add-architecture arm64
     sudo apt-get update
