@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 RUN apt-get update && \
-	apt-get install aptitude
+	apt-get -y install aptitude
 
 # 安装必要的依赖
 RUN apt-get update && \
