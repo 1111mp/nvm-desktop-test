@@ -1,5 +1,8 @@
 FROM ubuntu:22.04
 
+RUN apt-get update && \
+	apt-get install aptitude
+
 # 安装必要的依赖
 RUN apt-get update && \
 	aptitude install -y curl build-essential wget gcc-aarch64-linux-gnu pkg-config libgobject-2.0-dev libglib2.0-dev
