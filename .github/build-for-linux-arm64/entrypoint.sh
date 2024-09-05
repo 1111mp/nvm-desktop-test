@@ -4,9 +4,9 @@
 rustup default stable
 rustup --version
 
-wget https://nodejs.org/dist/v20.17.0/node-v20.17.0-linux-x64.tar.xz
-tar -Jxvf ./node-v20.17.0-linux-x64.tar.xz
-export PATH=$(pwd)/node-v20.17.0-linux-x64/bin:$PATH
+wget https://nodejs.org/dist/v20.17.0/node-v20.17.0-linux-arm64.tar.xz
+tar -Jxvf ./node-v20.17.0-linux-arm64.tar.xz
+export PATH=$(pwd)/node-v20.17.0-linux-arm64/bin:$PATH
 npm install pnpm -g
 
 rustup target add "$INPUT_TARGET"
