@@ -11,8 +11,7 @@
 		"ui:dev": "vite",
 		"ui:build": "vite build",
 		"ui:preview": "vite preview",
-		"check": "node scripts/check.mjs",
-		"updater": "node scripts/updater.mjs"
+		"check": "node scripts/check.mjs"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.9.0",
