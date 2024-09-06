@@ -14,6 +14,7 @@ rustup target add "$INPUT_TARGET"
 if [ "$INPUT_TARGET" = "aarch64-unknown-linux-gnu" ]; then
 		dpkg --add-architecture arm64
     apt-get update
+		apt-get install -y python3:arm64 build-essential:arm64 python3-mako:arm64 python3-markdown:arm64
 		apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu pkg-config libssl3:arm64
 		apt-get --fix-broken install
     apt-get install -y libwebkit2gtk-4.1-dev:arm64 libappindicator3-dev:arm64 librsvg2-dev:arm64 patchelf:arm64
