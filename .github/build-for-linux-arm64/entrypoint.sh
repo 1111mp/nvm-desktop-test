@@ -14,17 +14,12 @@ rustup target add "$INPUT_TARGET"
 if [ "$INPUT_TARGET" = "aarch64-unknown-linux-gnu" ]; then
 		dpkg --add-architecture arm64
     apt-get update
-		# apt-get install -y python3:arm64
-    # apt-get install -y build-essential:arm64
-		apt-get install -y libncurses6:arm64 libtinfo6:arm64 linux-libc-dev:arm64 libncursesw6:arm64 libssl3:arm64 libcups2:arm64
-		apt-get install -y g++-aarch64-linux-gnu libc6-dev-arm64-cross
-		apt-get --fix-broken install
+		apt-get upgrade -y
+		apt-get install -y gcc-aarch64-linux-gnu
+		apt-get install -y libssl-dev:arm64
     apt-get install -y libwebkit2gtk-4.1-dev:arm64 libappindicator3-dev:arm64 librsvg2-dev:arm64 patchelf:arm64
 		apt-get --fix-broken install
-		export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
-    export CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc
-    export CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++
-		export PKG_CONFIG_SYSROOT_DIR=/usr/aarch64-linux-gnu
+		export PKG_CONFIG_SYSROOT_DIR=/usr/aarch64-linux-gnu/
 		export PKG_CONFIG_ALLOW_CROSS=1
 else
     echo "Unknown target: $INPUT_TARGET" && exit 1
