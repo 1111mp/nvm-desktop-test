@@ -45,6 +45,8 @@ if [ "$INPUT_TARGET" = "aarch64-unknown-linux-gnu" ]; then
 
     apt-get update
 		apt-get upgrade -y
+		apt-get install -y aptitude
+		aptitude install -y python3:arm64 build-essential:arm64
 		apt-get install -y libssl-dev:arm64
     apt-get install -y libwebkit2gtk-4.1-dev:arm64 libappindicator3-dev:arm64 librsvg2-dev:arm64 patchelf:arm64
 		apt-get --fix-broken install
