@@ -39,7 +39,10 @@ const { platform, arch } = target
   : process;
 
 const NVMD_RELEASE_URL =
+  process.env.NVMD_RELEASE_URL ||
   'https://github.com/1111mp/nvmd-command-test/releases/latest/download';
+
+console.log('NVMD_RELEASE_URL', NVMD_RELEASE_URL);
 
 const NVMD_LATEST_MAP = {
   'win32-x64': 'nvmd_windows-x64.exe',
